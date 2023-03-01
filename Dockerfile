@@ -18,5 +18,5 @@ RUN bundle config set --local deployment true \
 COPY . /app
 
 CMD ["cd /app && bundle exec ruby main.rb"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/bash", "-c"]
 

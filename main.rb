@@ -2,18 +2,22 @@ require 'snappy'
 require 'zstandard'
 require 'benchmark'
 require 'securerandom'
+require 'zlib'
+require 'extlz4'
 
 # data = File.read('payload.tar')
-data = SecureRandom.bytes(1024 * ARGV[0].to_i)
+data = File.read('bigpayload')
+# data = SecureRandom.bytes(1024 * ARGV[0].to_i)
 
 def manytimes(&b)
+  tt = Integer(ENV.fetch('ITIMES'))
   res = []
-  4.times do
-    res << Benchmark.measure { 500.times(&b) }
+  tt.times do
+    res << Benchmark.measure(&b) # { 10.times(&b) }
   end
   v = b.call
 
-  [res.map(&:real).sum / 5.0, v]
+  [res.map(&:real).sum / tt.to_f, v]
 end
 
 def bytekb(v)
@@ -22,14 +26,27 @@ end
 
 puts "Data len: #{bytekb(data.length)}"
 
-t, compressed =  manytimes { Snappy.deflate(data) }
-puts "Snappy: #{bytekb(compressed.length)} (#{t * 1000})"
+def testlib(name, data, &fun)
+  t, compressed =  manytimes { fun.call(true, data) }
+  puts "#{name}: #{t * 1000}ms (#{bytekb(compressed.length)})"
 
-t, _ =  manytimes { Snappy.inflate(compressed) }
-puts "Snappy inflate: (#{t * 1000})"
+  t, _ =  manytimes { fun.call(false, compressed) }
+  puts "#{name} inflate: #{t * 1000}ms"
+end
 
-t, compressed = manytimes { Zstandard.deflate(data) }
-puts "zstd: #{bytekb(compressed.length)} (#{t * 1000})"
+testlib("LZ4", data) do |c, d|
+  c ? LZ4.encode(d) : LZ4.decode(d)
+end
 
-t, _ =  manytimes { Zstandard.inflate(compressed) }
-puts "zstd inflate: (#{t * 1000})"
+testlib("Snappy", data) do |c, d|
+  c ? Snappy.deflate(d) : Snappy.inflate(d)
+end
+
+testlib("Zstandard", data) do |c, d|
+  c ? Zstandard.deflate(d) : Zstandard.inflate(d)
+end
+
+testlib("Zlib", data) do |c, d|
+  c ? Zlib::Deflate.deflate(d) : Zlib::Inflate.inflate(d)
+end
+

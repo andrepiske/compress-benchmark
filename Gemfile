@@ -7,4 +7,5 @@ gem 'pry-byebug'
 
 gem 'snappy'
 gem 'zstandard'
+gem 'extlz4'
 
