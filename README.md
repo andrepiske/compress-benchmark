@@ -17,6 +17,7 @@ These are benchmarks performed with the Silesia corpus.
 1) dickens
 
 ```
+docker run --rm -ti -e ITIMES=100 -e FILE=silesia/dickens compress
 Reading file silesia/dickens
 Data len: 9.72mb
 LZ4: 56.919ms (6.15mb)
@@ -34,6 +35,7 @@ Zlib inflate: 43.740ms
 2) xml
 
 ```
+docker run --rm -ti -e ITIMES=100 -e FILE=silesia/xml compress
 Reading file silesia/xml
 Data len: 5.10mb
 LZ4: 9.063ms (1.29mb)
@@ -51,6 +53,7 @@ Zlib inflate: 11.561ms
 3) x-ray
 
 ```
+docker run --rm -ti -e ITIMES=100 -e FILE=silesia/x-ray compress
 Reading file silesia/x-ray
 Data len: 8.08mb
 LZ4: 24.311ms (7.69mb)
@@ -68,6 +71,7 @@ Zlib inflate: 50.946ms
 4) mozilla
 
 ```
+docker run --rm -ti -e ITIMES=20 -e FILE=silesia/mozilla compress
 Reading file silesia/mozilla
 Data len: 48.41mb
 LZ4: 120.898ms (25.20mb)
