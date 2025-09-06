@@ -54,10 +54,6 @@ testlib("Brotli", data) do |c, d|
   c ? Brotli.deflate(d, quality: 2) : Brotli.inflate(d)
 end
 
-testlib("Brotli", data) do |c, d|
-  c ? Brotli.deflate(d, { quality: 2 }) : Brotli.inflate(d)
-end
-
 testlib("Zlib", data) do |c, d|
   c ? Zlib::Deflate.deflate(d) : Zlib::Inflate.inflate(d)
 end
