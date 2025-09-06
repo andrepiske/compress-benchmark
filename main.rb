@@ -1,19 +1,19 @@
 require 'snappy'
-require 'zstandard'
+require 'zstd-ruby'
 require 'benchmark'
 require 'securerandom'
 require 'zlib'
 require 'extlz4'
+require 'brotli'
 
-# data = File.read('payload.tar')
-data = File.read('bigpayload')
-# data = SecureRandom.bytes(1024 * ARGV[0].to_i)
+puts "Reading file #{ARGV[0]}"
+data = File.read(ARGV[0])
 
 def manytimes(&b)
   tt = Integer(ENV.fetch('ITIMES'))
   res = []
   tt.times do
-    res << Benchmark.measure(&b) # { 10.times(&b) }
+    res << Benchmark.measure(&b)
   end
   v = b.call
 
@@ -28,10 +28,10 @@ puts "Data len: #{bytekb(data.length)}"
 
 def testlib(name, data, &fun)
   t, compressed =  manytimes { fun.call(true, data) }
-  puts "#{name}: #{t * 1000}ms (#{bytekb(compressed.length)})"
+  puts "#{name}: #{'%.3f' % (t * 1000)}ms (#{bytekb(compressed.length)})"
 
-  t, _ =  manytimes { fun.call(false, compressed) }
-  puts "#{name} inflate: #{t * 1000}ms"
+  t, _ = manytimes { fun.call(false, compressed) }
+  puts "#{name} inflate: #{'%.3f' % (t * 1000)}ms"
 end
 
 testlib("LZ4", data) do |c, d|
@@ -42,11 +42,18 @@ testlib("Snappy", data) do |c, d|
   c ? Snappy.deflate(d) : Snappy.inflate(d)
 end
 
-testlib("Zstandard", data) do |c, d|
-  c ? Zstandard.deflate(d) : Zstandard.inflate(d)
+testlib("Zstd-1", data) do |c, d|
+  c ? Zstd.compress(d, level: 1) : Zstd.decompress(d)
+end
+
+testlib("Zstd-4", data) do |c, d|
+  c ? Zstd.compress(d, level: 4) : Zstd.decompress(d)
+end
+
+testlib("Brotli", data) do |c, d|
+  c ? Brotli.deflate(d, quality: 2) : Brotli.inflate(d)
 end
 
 testlib("Zlib", data) do |c, d|
   c ? Zlib::Deflate.deflate(d) : Zlib::Inflate.inflate(d)
 end
-
