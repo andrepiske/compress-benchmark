@@ -1,5 +1,5 @@
 require 'snappy'
-require 'zstandard'
+require 'zstd-ruby'
 require 'benchmark'
 require 'securerandom'
 require 'zlib'
@@ -13,7 +13,7 @@ def manytimes(&b)
   tt = Integer(ENV.fetch('ITIMES'))
   res = []
   tt.times do
-    res << Benchmark.measure(&b) # { 10.times(&b) }
+    res << Benchmark.measure(&b)
   end
   v = b.call
 
@@ -42,8 +42,16 @@ testlib("Snappy", data) do |c, d|
   c ? Snappy.deflate(d) : Snappy.inflate(d)
 end
 
-testlib("Zstandard", data) do |c, d|
-  c ? Zstandard.deflate(d) : Zstandard.inflate(d)
+testlib("Zstd-1", data) do |c, d|
+  c ? Zstd.compress(d, level: 1) : Zstd.decompress(d)
+end
+
+testlib("Zstd-4", data) do |c, d|
+  c ? Zstd.compress(d, level: 4) : Zstd.decompress(d)
+end
+
+testlib("Brotli", data) do |c, d|
+  c ? Brotli.deflate(d, quality: 2) : Brotli.inflate(d)
 end
 
 testlib("Brotli", data) do |c, d|
