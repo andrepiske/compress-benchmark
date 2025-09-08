@@ -17,7 +17,7 @@ These are benchmarks performed with the Silesia corpus.
 1) dickens
 
 ```
-docker run --rm -ti -e ITIMES=100 compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/dickens'
+docker run --rm -ti -e ITIMES=100 andrepiske/compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/dickens'
 Reading file /silesia/dickens
 Data len: 9.72mb
 LZ4: 32.702ms (6.15mb)
@@ -37,7 +37,7 @@ Zlib inflate: 46.343ms
 2) xml
 
 ```
-docker run --rm -ti -e ITIMES=100 compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/xml'
+docker run --rm -ti -e ITIMES=100 andrepiske/compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/xml'
 Reading file /silesia/xml
 Data len: 5.10mb
 LZ4: 7.731ms (1.29mb)
@@ -57,7 +57,7 @@ Zlib inflate: 12.541ms
 3) x-ray
 
 ```
-docker run --rm -ti -e ITIMES=100 compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/x-ray'
+docker run --rm -ti -e ITIMES=100 andrepiske/compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/x-ray'
 Reading file /silesia/x-ray
 Data len: 8.08mb
 LZ4: 15.135ms (7.69mb)
@@ -77,7 +77,7 @@ Zlib inflate: 50.808ms
 4) mozilla
 
 ```
-docker run --rm -ti -e ITIMES=100 compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/mozilla'
+docker run --rm -ti -e ITIMES=100 andrepiske/compress-benchmark:ruby3.3.9 'bundle exec ruby --yjit main.rb /silesia/mozilla'
 Reading file /silesia/mozilla
 Data len: 48.41mb
 LZ4: 100.558ms (25.20mb)
