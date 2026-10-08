@@ -1,4 +1,4 @@
-FROM andrepiske/ruby:3.3.9-bookworm-jemalloc-yjit
+FROM andrepiske/ruby:4.0.7-trixie-jemalloc-yjit
 
 RUN apt-get update -y \
     && apt-get install -y build-essential m4 vim \
@@ -8,7 +8,7 @@ RUN apt-get update -y \
 
 RUN set -eux ; \
     mkdir /tmp/silesia ; cd /tmp/silesia ; \
-    curl -sLfo silesia.tar.zstd https://xb1-p.us-east-1.linodeobjects.com/silesia.tar.zstd && \
+    curl -sLfo silesia.tar.zstd https://f002.backblazeb2.com/file/xb1-p-public/silesia.tar.zstd && \
     zstd -d silesia.tar.zstd && tar xf silesia.tar && \
     cp -rf /tmp/silesia/silesia /silesia && \
     rm -rf /tmp/silesia
